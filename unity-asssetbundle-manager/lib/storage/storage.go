@@ -3,6 +3,7 @@ package storage
 import (
 	"fmt"
 	"io/ioutil"
+	"mime/multipart"
 	"os"
 )
 
@@ -19,8 +20,8 @@ type File struct {
 	Filename string
 }
 
-// Root dir
-func Root(path string) *Dir {
+// Get dir
+func Get(path string) *Dir {
 	_, err := os.Stat(path)
 
 	if os.IsNotExist(err) {
@@ -28,27 +29,48 @@ func Root(path string) *Dir {
 		return &Dir{Path: path, Error: err}
 	}
 
-	return &Dir{Error: err}
+	return &Dir{Error: err, Path: path}
 }
 
 // Dir relative of root
 func (d *Dir) Dir(path string) *Dir {
-	npath := d.Path + path
+	if d.Error != nil {
+		return &Dir{Error: d.Error}
+	}
+
+	npath := d.Path + "/" + path
 
 	if err := os.MkdirAll(npath, 0700); err != nil {
 		return &Dir{Error: err}
 	}
 
-	return &Dir{Path: path}
+	return &Dir{Path: npath}
 }
 
-// Write file to Dir
-func (d *Dir) Write(filename string, data []byte) *File {
-	npath := fmt.Sprintf("%s/%s", d.Path, filename)
-	err := ioutil.WriteFile(npath, data, 0700)
+// Save file to Dir
+func (d *Dir) Save(f *multipart.FileHeader) *File {
+	if d.Error != nil {
+		return &File{Error: d.Error}
+	}
+
+	path := fmt.Sprintf("%s/%s", d.Path, f.Filename)
+	data := make([]byte, f.Size)
+	file, err := f.Open()
+
+	if err != nil {
+		return &File{Error: err}
+	}
+
+	if _, err := file.Read(data); err != nil {
+		return &File{Error: err}
+	}
+
+	if err := ioutil.WriteFile(path, data, 0700); err != nil {
+		return &File{Error: err}
+	}
+
 	return &File{
-		Error:    err,
-		Filepath: npath,
-		Filename: filename,
+		Filepath: path,
+		Filename: f.Filename,
 	}
 }
