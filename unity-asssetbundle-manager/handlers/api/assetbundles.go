@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"private/gts.com/asssetbundle-manager/models"
+	"github.com/mosluce/go-playground/unity-asssetbundle-manager/models"
 
 	"github.com/gin-gonic/gin"
 	sqlite "github.com/mosluce/go-playground/unity-asssetbundle-manager/lib/database/sqlite3"
@@ -77,7 +77,13 @@ func Create(ctx *gin.Context) {
 
 // List of all AssetBundles
 func List(ctx *gin.Context) {
-	ctx.JSON(http.StatusNotFound, gin.H{})
+	db := sqlite.Open("db.sqlite")
+	defer db.Close()
+
+	var abs []models.AssetBundle
+	db.DB.Find(&abs)
+
+	ctx.JSON(http.StatusOK, abs)
 }
 
 // Get AssetBundle data
