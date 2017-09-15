@@ -40,7 +40,7 @@ func Create(ctx *gin.Context) {
 	tx := db.DB.Begin()
 
 	var count int
-	db.DB.Model(&models.AssetBundle{}).Where("Name = ?", ab.Filename).Count(&count)
+	tx.Model(&models.AssetBundle{}).Where("Name = ?", ab.Filename).Count(&count)
 
 	if count > 0 {
 		ctx.JSON(http.StatusBadRequest, gin.H{
