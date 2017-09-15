@@ -7,7 +7,7 @@ import "github.com/mosluce/go-playground/unity-asssetbundle-manager/lib/storage"
 
 func main() {
 	sqlite.Open("db.sqlite").Migrate()
-	storage.Root("storage")
+	storage.Get("storage")
 
 	app := gin.Default()
 
