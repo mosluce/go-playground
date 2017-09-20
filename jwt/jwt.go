@@ -28,7 +28,7 @@ func main() {
 	// 輸出
 	fmt.Println("token >>", tokenString)
 
-	// 從 token string 轉換成 token (需指定 Claim 型別)
+	// 從 token string 轉換成 token (需指定 Claim 「指標」)
 	token, err := jwt.ParseWithClaims(tokenString, &HelloClaim{}, func(token *jwt.Token) (interface{}, error) {
 		// TODO 可以在這裡檢查 method 之類的
 		return secret, nil
@@ -40,7 +40,7 @@ func main() {
 		return
 	}
 
-	// 轉型(?) 並輸出
+	// 轉型(interface to struct)成「指標」 並輸出
 	if claim, ok := token.Claims.(*HelloClaim); ok && token.Valid {
 		fmt.Println("ok >>", claim.Name)
 	} else {
