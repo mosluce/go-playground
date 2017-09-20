@@ -24,16 +24,19 @@ func main() {
 	} else {
 		fmt.Println("to *B", "not ok")
 	}
+	// => yo
 
 	if ob, ok := oa.(B); ok {
 		fmt.Println(ob.Title)
 	} else {
 		fmt.Println("to B", "not ok")
 	}
+	// => to B not ok
 
 	if oc, ok := oa.(*C); ok {
 		fmt.Println(oc.Title)
 	} else {
-		fmt.Println("to C", "not ok")
+		fmt.Println("to *C", "not ok")
 	}
+	// to *C not ok
 }
