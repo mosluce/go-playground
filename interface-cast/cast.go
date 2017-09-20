@@ -22,6 +22,12 @@ func main() {
 	if ob, ok := oa.(*B); ok {
 		fmt.Println(ob.Title)
 	} else {
+		fmt.Println("to *B", "not ok")
+	}
+
+	if ob, ok := oa.(B); ok {
+		fmt.Println(ob.Title)
+	} else {
 		fmt.Println("to B", "not ok")
 	}
 
