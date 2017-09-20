@@ -4,39 +4,38 @@ import (
 	"fmt"
 )
 
-type A interface{}
-
-type B struct {
-	Title string
+type MyInterface interface {
+	SayHello()
 }
 
-type C struct {
+type Base struct{}
+
+func (b Base) SayHello() {
+	fmt.Println("Hello!!!!")
+}
+
+type MyItem struct {
 	Title string
+
+	Base
 }
 
 func main() {
-	var oa A
+	var x MyInterface
 
-	oa = &B{"yo"}
+	x = &MyItem{Title: "yo"}
 
-	if ob, ok := oa.(*B); ok {
-		fmt.Println(ob.Title)
+	if item, ok := x.(*MyItem); ok {
+		fmt.Println(item.Title)
 	} else {
-		fmt.Println("to *B", "not ok")
+		fmt.Println("to *MyItem", "not ok")
 	}
 	// => yo
 
-	if ob, ok := oa.(B); ok {
-		fmt.Println(ob.Title)
+	if item, ok := x.(MyItem); ok {
+		fmt.Println(item.Title)
 	} else {
-		fmt.Println("to B", "not ok")
+		fmt.Println("to MyItem", "not ok")
 	}
 	// => to B not ok
-
-	if oc, ok := oa.(*C); ok {
-		fmt.Println(oc.Title)
-	} else {
-		fmt.Println("to *C", "not ok")
-	}
-	// to *C not ok
 }
